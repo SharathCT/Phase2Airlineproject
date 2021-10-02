@@ -1,0 +1,921 @@
+LOGIN
+package airline.management.system;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.sql.*;
+
+public class Login extends JFrame implements ActionListener{
+    
+    TextField t1,t2;
+    Label l1,l2;
+    Button b2,b3,b4;
+    GridBagLayout gbl;  
+    GridBagConstraints gbc; 
+    Font f1,f2;
+    
+    public Login(){
+        super("Login");
+                
+        setBackground(Color.WHITE); 
+        f1 = new Font("TimesRoman",Font.BOLD,20);
+        f2 = new Font("TimesRoman",Font.BOLD,15);
+		
+        gbl=new GridBagLayout(); 
+	gbc=new GridBagConstraints();
+        setLayout(gbl); 
+	
+        l1 = new Label("Username");
+        l1.setFont(f1);
+	
+        l2 = new Label("Password");
+        l2.setFont(f1);
+
+	
+        t1 = new TextField(15); 
+	t2 = new TextField(15); 
+        t2.setEchoChar('*');
+	
+	b2 = new Button("Reset");
+        b2.setFont(f2);
+		
+        b3 = new Button("Submit");
+        b3.setFont(f2);
+		
+        b4 = new Button("Close");
+	b4.setFont(f2);
+		
+        gbc.gridx=0;
+	gbc.gridy=0; 
+        gbl.setConstraints(l1,gbc);
+	add(l1);
+        
+	gbc.gridx=2;
+        gbc.gridy=0;
+	gbl.setConstraints(t1,gbc);
+        add(t1);
+		
+	gbc.gridx=0;
+        gbc.gridy=2;
+	gbl.setConstraints(l2,gbc);
+        add(l2);
+
+	gbc.gridx=2;
+        gbc.gridy=2;
+        gbl.setConstraints(t2,gbc);
+	add(t2);
+				
+	
+	gbc.gridx=0;
+        gbc.gridy=8;
+	gbl.setConstraints(b2,gbc);
+        add(b2);
+
+        gbc.gridx=2;
+	gbc.gridy=8;
+        gbl.setConstraints(b3,gbc);
+	add(b3);
+	
+        gbc.gridx=4;
+	gbc.gridy=8;
+        gbl.setConstraints(b4,gbc);
+	add(b4);
+        
+
+        b2.addActionListener(this);
+        b3.addActionListener(this);
+	b4.addActionListener(this);
+                
+        setVisible(true);   
+        setSize(400,250); 
+        setLocation(400,200);   
+    }
+
+    public void actionPerformed(ActionEvent ae){
+        if(ae.getSource()==b2){
+          
+            t1.setText("");  
+            t2.setText(""); 
+	}
+        if(ae.getSource()==b4){
+            System.exit(0); 
+	}
+        if(ae.getSource()==b3){
+            try{
+                conn c1 = new conn();
+                
+                String s1 = t1.getText();
+                String s2 = t2.getText();
+            
+                String str = "select * from login where username = '"+s1+"' and password = '"+s2+"'";
+                ResultSet rs = c1.s.executeQuery(str);  
+                
+                if(rs.next()){
+                    new Mainframe();
+                    setVisible(false);
+                }else{
+                    JOptionPane.showMessageDialog(null,"Invalid Login");
+                    setVisible(false); 
+                }
+            
+            }catch(Exception e){}
+            
+	}
+    }        
+   
+    public static void main(String[] args){
+            new Login();
+    }
+}
+==================================================
+
+MAIN FRAME
+
+package airline.management.system;
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+
+
+public class Mainframe extends JFrame{
+
+    public static void main(String[] args) {
+        new Mainframe().setVisible(true);
+    }
+    
+    public Mainframe() {
+        super("AIRLINE RESERVATION MANAGEMENT SYSTEM");
+        initialize();
+    }
+
+    
+    private void initialize() {
+	
+        setForeground(Color.CYAN);
+        setLayout(null); 
+
+        JLabel NewLabel = new JLabel("");
+	NewLabel.setIcon(new ImageIcon(ClassLoader.getSystemResource("airline/management/system/icon/front.jpg")));
+	NewLabel.setBounds(0, 0, 1920, 990); 
+	add(NewLabel); 
+        
+        JLabel AirlineManagementSystem = new JLabel("AIR INDIA WELCOMES YOU");
+	AirlineManagementSystem.setForeground(Color.BLUE);
+        AirlineManagementSystem.setFont(new Font("Tahoma", Font.PLAIN, 36));
+	AirlineManagementSystem.setBounds(700, 60, 1000, 55);
+	NewLabel.add(AirlineManagementSystem);
+		
+		
+        JMenuBar menuBar = new JMenuBar();
+	setJMenuBar(menuBar);
+		
+        JMenu AirlineSystem = new JMenu("AIRLINE SYSTEM");
+        AirlineSystem.setForeground(Color.BLUE);
+	menuBar.add(AirlineSystem);
+		
+        JMenuItem FlightDetails = new JMenuItem("FLIGHT_INFO");
+	AirlineSystem.add(FlightDetails);
+		
+	JMenuItem ReservationDetails = new JMenuItem("ADD_CUSTOMER_DETAILS");
+	AirlineSystem.add(ReservationDetails);
+		
+	JMenuItem PassengerDetails = new JMenuItem("JOURNEY_DETAILS");
+	AirlineSystem.add(PassengerDetails);
+		
+	JMenuItem SectorDetails_1 = new JMenuItem("PAYMENT_DETAILS");
+	AirlineSystem.add(SectorDetails_1);
+		
+	JMenuItem Cancellation = new JMenuItem("CANCELLATION");
+	AirlineSystem.add(Cancellation);
+		
+	JMenu Ticket = new JMenu("TICKET");
+        Ticket.setForeground(Color.RED);
+	menuBar.add(Ticket);
+		
+        JMenu List = new JMenu("LIST");
+        List.setForeground(Color.BLUE);
+	menuBar.add(List);
+		
+	JMenu Misc = new JMenu("MISC");
+        Misc.setForeground(Color.RED);
+	menuBar.add(Misc);
+        
+		
+	FlightDetails.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ae){
+                new Flight_Info();
+            }
+	});
+        
+	ReservationDetails.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ae){
+                try {
+                    new Add_Customer();
+		} catch (Exception e) {
+                    e.printStackTrace();
+		} 
+            }
+	});
+		
+        PassengerDetails.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ae){
+                try {
+                    new Journey_Details();
+                } catch (Exception e) {
+                    e.printStackTrace();
+		}
+            }
+	});
+		
+        SectorDetails_1.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ae){
+                try {
+                    new Payment_Details();
+		} catch (Exception e) {
+                    e.printStackTrace();
+		}
+            }
+	});
+		
+        Cancellation.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ae){
+                new Cancel();
+            }
+	});
+		
+        setSize(1950,1090);
+	setVisible(true);
+    }
+}
+=================================================
+FLIGHT INFO
+
+package airline.management.system;
+
+import net.proteanit.sql.DbUtils;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+import javax.swing.*;
+
+public class Flight_Info extends JFrame{  //Second Frame
+
+    private JTable table;
+    private JTextField textField;
+    
+    public static void main(String[] args){		 
+	new Flight_Info().setVisible(true);    
+    }
+    
+    public Flight_Info(){
+        
+        getContentPane().setBackground(Color.WHITE);
+        getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 13));
+		
+	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	setSize(860,523);
+	setLayout(null);
+	setVisible(true);
+		
+	JLabel Fcode = new JLabel("FLIGHT CODE");
+	Fcode.setFont(new Font("Tahoma", Font.PLAIN, 17));
+        Fcode.setBounds(50, 100, 200, 30);
+	add(Fcode);
+	
+		
+	JLabel FlightDetails = new JLabel("FLIGHT INFORMATION");
+	FlightDetails.setFont(new Font("Tahoma", Font.PLAIN, 31));
+	FlightDetails.setForeground(new Color(100, 149, 237));
+	FlightDetails.setBounds(50, 20, 570, 35);
+	add(FlightDetails);
+		
+	JButton btnShow = new JButton("SHOW");
+	btnShow.setFont(new Font("Tahoma", Font.PLAIN, 20));
+	
+        btnShow.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+	
+                String code = textField.getText();
+                
+                try {
+                    conn c = new conn();
+                    String str = "select f_code,f_name,src,dst,capacity,class_code,class_name from flight ,sector where f_code = '"+code+"'";
+      
+                    ResultSet rs = c.s.executeQuery(str);
+                    table.setModel(DbUtils.resultSetToTableModel(rs));	
+                    
+                }catch(SQLException e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        btnShow.setBounds(220, 150, 120, 30);
+	add(btnShow);
+		
+        table = new JTable();
+        table.setBackground(Color.WHITE);
+	table.setBounds(23, 250, 800, 300);
+        
+        JScrollPane pane = new JScrollPane(table);
+	pane.setBounds(23, 250, 800, 300);
+        pane.setBackground(Color.WHITE);
+        add(pane);
+		
+	textField = new JTextField();
+        textField.setBounds(220, 100, 200, 30);
+	add(textField);
+		
+	JLabel FlightCode = new JLabel("FLIGHT CODE");
+	FlightCode.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        FlightCode.setBounds(23, 220, 126, 14);
+	add(FlightCode);
+		
+	JLabel FlightName = new JLabel("FLIGHT NAME");
+        FlightName.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	FlightName.setBounds(145, 220, 120, 14);
+	add(FlightName);
+		
+	JLabel Source = new JLabel("SOURCE");
+	Source.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	Source.setBounds(275, 220, 104, 14);
+	add(Source);
+		
+	JLabel Destination = new JLabel("DESTINATION");
+	Destination.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	Destination.setBounds(367, 220, 120, 14);
+	add(Destination);
+		
+		
+	JLabel Capacity = new JLabel("CAPACITY");
+	Capacity.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	Capacity.setBounds(497, 220, 111, 14);
+	add(Capacity);
+		
+	JLabel ClassCode = new JLabel("CLASS CODE");
+	ClassCode.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	ClassCode.setBounds(587, 220, 120, 14);
+	add(ClassCode);
+		
+	JLabel ClassName = new JLabel("CLASS NAME");
+	ClassName.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	ClassName.setBounds(700, 220, 111, 14);
+	add(ClassName);
+		
+	
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+	setSize(900,650);
+        setVisible(true);
+        setLocation(400,200);
+		
+    }
+}
+============================================
+ADD CUSTUMER
+
+package airline.management.system;
+
+import java.awt.EventQueue;
+
+
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+import javax.swing.*;
+
+public class Add_Customer extends JFrame{ //Third Frame
+
+    
+	JTextField textField,textField_1,textField_2,textField_3,textField_4,textField_5,textField_6;
+
+        public Add_Customer(){
+            getContentPane().setForeground(Color.BLUE);
+            getContentPane().setBackground(Color.WHITE);
+            setTitle("ADD CUSTOMER DETAILS");
+		 
+            setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            setSize(778,486);
+            getContentPane().setLayout(null);
+			
+            JLabel Passportno = new JLabel("PASSPORT NO");
+            Passportno.setFont(new Font("Tahoma", Font.PLAIN, 17));
+            Passportno.setBounds(60, 80, 150, 27);
+            add(Passportno);
+            
+            textField = new JTextField();
+            textField.setBounds(200, 80, 150, 27);
+            add(textField);
+			
+            JButton Next = new JButton("SAVE");
+            Next.setBounds(200, 420, 150, 30);
+            Next.setBackground(Color.BLACK);
+            Next.setForeground(Color.WHITE);
+            add(Next);
+			
+            JLabel Pnrno = new JLabel("PNR NO");
+            Pnrno.setFont(new Font("Tahoma", Font.PLAIN, 17));
+            Pnrno.setBounds(60, 120, 150, 27);
+            add(Pnrno);
+			
+            textField_1 = new JTextField();
+            textField_1.setBounds(200, 120, 150, 27);
+            add(textField_1);
+            
+            JLabel Address = new JLabel("ADDRESS");
+            Address.setFont(new Font("Tahoma", Font.PLAIN, 17));
+            Address.setBounds(60, 170, 150, 27);
+            add(Address);
+			
+            textField_2 = new JTextField();
+            textField_2.setBounds(200, 170, 150, 27);
+            add(textField_2);
+            		
+            JLabel Nationality = new JLabel("NATIONALITY");
+            Nationality.setFont(new Font("Tahoma", Font.PLAIN, 17));
+            Nationality.setBounds(60, 220, 150, 27);
+            add(Nationality);
+			
+            textField_3 = new JTextField();
+            textField_3.setBounds(200, 220, 150, 27);
+            add(textField_3);
+	
+            JLabel Name = new JLabel("NAME");
+            Name.setFont(new Font("Tahoma", Font.PLAIN, 17));
+            Name.setBounds(60, 270, 150, 27);
+            add(Name);
+	
+            textField_4 = new JTextField();
+            textField_4.setBounds(200, 270, 150, 27);
+            add(textField_4);
+	
+            JLabel Gender = new JLabel("GENDER");
+            Gender.setFont(new Font("Tahoma", Font.PLAIN, 17));
+            Gender.setBounds(60, 320, 150, 27);
+            add(Gender);
+		
+            JRadioButton NewRadioButton = new JRadioButton("MALE");
+            NewRadioButton.setBackground(Color.WHITE);
+            NewRadioButton.setBounds(200, 320, 70, 27);
+            add(NewRadioButton);
+	
+            JRadioButton Female = new JRadioButton("FEMALE");
+            Female.setBackground(Color.WHITE);
+            Female.setBounds(280, 320, 70, 27);
+            add(Female);
+            
+            JLabel Phno = new JLabel("PH NO");
+            Phno.setFont(new Font("Tahoma", Font.PLAIN, 17));
+            Phno.setBounds(60, 370, 150, 27);
+            add(Phno);
+			
+            textField_5 = new JTextField();
+            textField_5.setBounds(200, 370, 150, 27);
+            add(textField_5);
+	
+            setVisible(true);
+	
+            JLabel AddPassengers = new JLabel("ADD CUSTOMER DETAILS");
+            AddPassengers.setForeground(Color.BLUE);
+            AddPassengers.setFont(new Font("Tahoma", Font.PLAIN, 31));
+            AddPassengers.setBounds(420, 24, 442, 35);
+            add(AddPassengers);
+			
+    
+            JLabel Flightcode = new JLabel("FLIGHT CODE");
+            Flightcode.setFont(new Font("Tahoma", Font.PLAIN, 17));
+            Flightcode.setBounds(60, 30, 150, 27);
+            add(Flightcode);
+
+            textField_6 = new JTextField();
+            textField_6.setBounds(200, 30, 150, 27);
+            add(textField_6);
+            
+            
+            ImageIcon i1 = new ImageIcon(ClassLoader.getSystemResource("airline/management/system/icon/emp.png"));
+            JLabel image = new JLabel(i1);
+            image.setBounds(450,80,280,410);
+            add(image);
+
+            
+            Next.addActionListener(new ActionListener(){
+                public void actionPerformed(ActionEvent ae){
+                    String passport_No = textField.getText();
+                    String pnr_no = textField_1.getText();
+                    String address =  textField_2.getText();
+                    String nationality = textField_3.getText();
+                    String name = textField_4.getText();
+                    String fl_code = textField_6.getText();
+                   
+                    String gender = null;
+                    String ph_no = textField_5.getText();
+                    
+                    if(NewRadioButton.isSelected()){
+                        gender = "male";
+                    
+                    }else if(Female.isSelected()){
+                        gender = "female";
+                    }
+                    
+                    try {
+                        conn c = new conn();
+                        String str = "INSERT INTO passenger values( '"+pnr_no+"', '"+address+"', '"+nationality+"','"+name+"', '"+gender+"', '"+ph_no+"','"+passport_No+"', '"+fl_code+"')";
+                        
+                        c.s.executeUpdate(str);
+                        JOptionPane.showMessageDialog(null,"Customer Added");
+                        setVisible(false);
+                    
+                    } catch (Exception e) {
+                        e.printStackTrace();
+        	    }
+		}
+            });
+			
+            setSize(900,600);
+            setVisible(true);
+            setLocation(400,200);
+			
+	}
+        
+    public static void main(String[] args){
+        new Add_Customer();
+    }   
+}
+==============================================
+CANCEL
+
+package airline.management.system;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+
+
+public class Cancel extends JFrame { //Sixth
+    
+    private JTextField textField,textField_1,textField_2,textField_3,textField_4;
+
+    public static void main(String[] args) {
+        new Cancel();
+    }
+    
+    public Cancel() {
+        initialize();
+    }
+    
+    private void initialize() {
+        setTitle("CANCELLATION");
+	getContentPane().setBackground(Color.WHITE);
+	setBounds(100, 100, 801, 472);
+	setLayout(null);
+		
+	JLabel Cancellation = new JLabel("CANCELLATION");
+	Cancellation.setFont(new Font("Tahoma", Font.PLAIN, 31));
+	Cancellation.setBounds(185, 24, 259, 38);
+	add(Cancellation);
+		
+	
+        ImageIcon i1 = new ImageIcon(ClassLoader.getSystemResource("airline/management/system/icon/cancel.png"));
+        Image i2 = i1.getImage().getScaledInstance(250, 250, Image.SCALE_DEFAULT);
+        ImageIcon i3 = new ImageIcon(i2);
+        JLabel NewLabel = new JLabel(i3);
+	NewLabel.setBounds(470, 100, 250, 250);
+	add(NewLabel);
+		
+	JLabel PassengerNo = new JLabel("PASSENGER NO");
+	PassengerNo.setFont(new Font("Tahoma", Font.PLAIN, 17));
+	PassengerNo.setBounds(60, 100, 132, 26);
+	add(PassengerNo);
+		
+	JLabel CancellationNo = new JLabel("CANCELLATION NO");
+	CancellationNo.setFont(new Font("Tahoma", Font.PLAIN, 17));
+	CancellationNo.setBounds(60, 150, 150, 27);
+	add(CancellationNo);
+		
+	JLabel CancellationDate = new JLabel("CANCELLATION DATE");
+	CancellationDate.setFont(new Font("Tahoma", Font.PLAIN, 17));
+	CancellationDate.setBounds(60, 200, 180, 27);
+	add(CancellationDate);
+		
+	JLabel Ticketid = new JLabel("TICKET_ID");
+	Ticketid.setFont(new Font("Tahoma", Font.PLAIN, 17));
+	Ticketid.setBounds(60, 250, 150, 27);
+	add(Ticketid);
+		
+	JLabel Flightcode = new JLabel("FLIGHT_CODE");
+	Flightcode.setFont(new Font("Tahoma", Font.PLAIN, 17));
+	Flightcode.setBounds(60, 300, 150, 27);
+	add(Flightcode);
+		
+	JButton Cancel = new JButton("CANCEL");
+	Cancel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        Cancel.setBackground(Color.BLACK);
+        Cancel.setForeground(Color.WHITE);
+	Cancel.setBounds(250, 350, 150, 30);
+	add(Cancel);
+		
+	textField = new JTextField();
+	textField.setBounds(250, 100, 150, 27);
+	add(textField);
+	
+        textField_1 = new JTextField();
+	textField_1.setBounds(250, 150, 150, 27);
+	add(textField_1);
+		
+	textField_2 = new JTextField();
+	textField_2.setBounds(250, 200, 150, 27);
+	add(textField_2);
+	
+        textField_3 = new JTextField();
+	textField_3.setBounds(250, 250, 150, 27);
+	add(textField_3);
+		
+	textField_4 = new JTextField();
+	textField_4.setBounds(250, 300, 150, 27);
+	add(textField_4);
+	
+        Cancel.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ae){
+		
+                String passenger_no = textField.getText();
+		String cancellation_no = textField_1.getText();
+		String cancellation_date = textField_2.getText();
+		String ticket_id = textField_3.getText();
+		String flight_code = textField_4.getText();
+					
+					
+		try{	
+                    conn c = new conn();
+                    String str = "INSERT INTO cancellation values('"+passenger_no+"', '"+cancellation_no+"', '"+cancellation_date+"', '"+ticket_id+"', '"+flight_code+"')";
+		
+                    c.s.executeUpdate(str);
+                    JOptionPane.showMessageDialog(null,"Ticket Canceled");
+                    setVisible(false);
+						
+		}catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+			
+	setSize(860,500);
+	setVisible(true);
+        setLocation(400,200);
+    }
+}
+===============================================
+JOURNEY DETAILS
+
+package airline.management.system;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+import javax.swing.*;
+import net.proteanit.sql.DbUtils;
+
+public class Journey_Details extends JFrame{  //Forth
+
+    JTable table;
+    JLabel ReservationDetails,Pnrno,Ticketid,Fcode,Jnydate,Jnytime,Source,Destination,label,label1;
+    JButton Show;
+
+    public static void main(String[] args){
+        new Journey_Details();
+    }
+    
+    public Journey_Details(){
+        
+        setTitle("JOURNEY_DETAILS");
+	getContentPane().setBackground(Color.WHITE);
+	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	
+	setLayout(null);
+		
+	Source = new JLabel("SOURCE");
+	Source.setFont(new Font("Tahoma", Font.PLAIN, 19));
+	Source.setBounds(60, 100, 150, 27);
+	add(Source);
+	
+        Destination = new JLabel("DESTINATION");
+	Destination.setFont(new Font("Tahoma", Font.PLAIN, 19));
+	Destination.setBounds(350, 100, 150, 27);
+	add(Destination);
+		
+	
+		
+	Show = new JButton("SHOW");
+	Show.setBounds(680, 100, 100, 30);
+	add(Show);
+
+	setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		
+	ReservationDetails = new JLabel("JOURNEY DETAILS");
+	ReservationDetails.setForeground(Color.BLUE);
+	ReservationDetails.setFont(new Font("Tahoma", Font.PLAIN, 31));
+	ReservationDetails.setBounds(280, 27, 359, 31);
+	add(ReservationDetails);
+		
+	Pnrno = new JLabel("PNR_NO");
+	Pnrno.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	Pnrno.setBounds(79, 270, 83, 20);
+	add(Pnrno);
+		
+	Ticketid = new JLabel("TICKET_ID");
+	Ticketid.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	Ticketid.setBounds(172, 270, 71, 20);
+	add(Ticketid);
+		
+	Fcode = new JLabel("F_CODE");
+	Fcode.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	Fcode.setBounds(297, 270, 103, 20);
+	add(Fcode);
+		
+	Jnydate = new JLabel("JNY_DATE");
+	Jnydate.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	Jnydate.setBounds(390, 270, 94, 20);
+	add(Jnydate);
+		
+	Jnytime = new JLabel("JNY_TIME");
+	Jnytime.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	Jnytime.setBounds(494, 270, 83, 20);
+	add(Jnytime);
+		
+	Source = new JLabel("SOURCE");
+	Source.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	Source.setBounds(613, 270, 94, 20);
+	add(Source);
+		
+	Destination = new JLabel("DESTINATION");
+	Destination.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	Destination.setBounds(717, 270, 94, 20);
+	add(Destination);
+        
+	String[] items1 =  {"BANGALORE", "MUMBAI", "CHENNAI", "PATNA","DELHI","HYDERABAD"};
+	JComboBox comboBox = new JComboBox(items1);
+	comboBox.setBounds(150, 100, 150, 27);
+	add(comboBox);
+		
+		
+	String[] items2 =  {"BANGALORE", "MUMBAI", "CHENNAI", "PATNA","DELHI","HYDERABAD"};
+	JComboBox comboBox_1 = new JComboBox(items2);
+	comboBox_1.setBounds(500, 100, 150, 27);
+	add(comboBox_1);
+        
+        table = new JTable();
+	table.setBounds(38, 310, 770, 130);
+	add(table);
+	
+		
+		
+	Show.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ae){
+		try{
+                    String src  = (String) comboBox.getSelectedItem();
+                    String dst  = (String) comboBox_1.getSelectedItem();
+                    
+                    conn c = new conn();
+                    
+                    String str = "select pnr_no,ticket_id,f_code,jny_date,jny_time,src,dst from reservation where src = '"+src+"' and dst = '"+dst+"'";
+                    ResultSet rs=c.s.executeQuery(str);
+                    
+                    if(rs.next()){
+                        table.setModel(DbUtils.resultSetToTableModel(rs));
+                    }else{
+                        JOptionPane.showMessageDialog(null,"No Flights between Source and Destination");
+                        
+                    }					
+                    
+					
+		}catch(Exception e){}
+            }
+	});
+		
+	setSize(860,600);
+        setLocation(400,200);
+	setVisible(true);
+		
+    }
+}
+============================================
+PAYMENT DETAILS
+
+package airline.management.system;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+import javax.swing.*;
+import net.proteanit.sql.DbUtils;
+
+public class Payment_Details extends JFrame{ //Fifth
+
+    JTextField textField;
+    JTable table;
+    JLabel Sector;
+    JLabel FlightCode, Capacity, Classcode, Classname, label;
+
+    public static void main(String[] args) {
+        new Payment_Details();
+    }
+
+    public Payment_Details(){
+	initialize();
+    }
+
+    private void initialize(){
+        setTitle("PAYMENT_DETAILS");
+	getContentPane().setBackground(Color.WHITE);
+	setSize(860,486);
+	setLayout(null);
+		
+	JLabel Fcode = new JLabel("PNR NO");
+	Fcode.setFont(new Font("Tahoma", Font.PLAIN, 17));
+	Fcode.setBounds(60, 160, 150, 26);
+	add(Fcode);
+		
+	textField = new JTextField();
+	textField.setBounds(200, 160, 150, 26);
+	add(textField);
+	
+        table = new JTable();
+	table.setBounds(45, 329, 766, 87);
+	add(table);
+		
+	JButton Show = new JButton("SHOW");
+	Show.setFont(new Font("Tahoma", Font.PLAIN, 17));
+        Show.setBackground(Color.BLACK);
+        Show.setForeground(Color.WHITE);
+	Show.setBounds(200, 210, 150, 26);
+	add(Show);
+		
+	Sector = new JLabel("PAYMENT DETAILS");
+	Sector.setForeground(Color.BLUE);
+	Sector.setFont(new Font("Tahoma", Font.PLAIN, 31));
+	Sector.setBounds(51, 17, 300, 39);
+	add(Sector);
+		
+	FlightCode = new JLabel("PNR_NO");
+	FlightCode.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	FlightCode.setBounds(84, 292, 108, 26);
+	add(FlightCode);
+		
+	Capacity = new JLabel("PAID_AMOUNT");
+	Capacity.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	Capacity.setBounds(183, 298, 92, 14);
+	add(Capacity);
+		
+	Classcode = new JLabel("PAY_DATE");
+	Classcode.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	Classcode.setBounds(322, 294, 101, 24);
+	add(Classcode);
+		
+	Classname = new JLabel("CHEQUE_NO");
+	Classname.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	Classname.setBounds(455, 298, 114, 14);
+	add(Classname);
+		
+	label = new JLabel("");
+	label.setIcon(new ImageIcon(ClassLoader.getSystemResource("airline/management/system/icon/payment.png")));
+	label.setBounds(425, 15, 239, 272);
+	add(label);
+		
+	JLabel Cardno = new JLabel("CARD_NO");
+	Cardno.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	Cardno.setBounds(602, 299, 101, 19);
+	add(Cardno);
+		
+	JLabel Phoneno = new JLabel("PHONE_NO");
+	Phoneno.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	Phoneno.setBounds(712, 294, 86, 24);
+	add(Phoneno);
+	
+        setVisible(true);
+		
+	Show.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ae){
+		
+                try {
+                    String code  = textField.getText();
+                    
+                    conn c = new conn();
+                    String str = "select pnr_no,paid_amt,pay_date,cheque_no,card_no,ph_no from payment where pnr_no = '"+code+"'";
+					
+                    ResultSet rs = c.s.executeQuery(str);
+		
+                    table.setModel(DbUtils.resultSetToTableModel(rs));
+					
+		}catch(SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+	});
+		
+	setSize(960,590);
+        setLocation(400,200);
+	setVisible(true);
+
+    }
+}
